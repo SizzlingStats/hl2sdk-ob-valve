@@ -265,6 +265,7 @@ inline const char *CCommand::operator[]( int nIndex ) const
 //-----------------------------------------------------------------------------
 class ConCommand : public ConCommandBase
 {
+friend class CConCommandHook;
 friend class CCvar;
 
 public:
