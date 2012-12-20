@@ -53,6 +53,7 @@ class CStandardRecvProxies;
 struct client_textmessage_t;
 class IAchievementMgr;
 class CGamestatsData;
+class StartSoundParams_t;
 
 //-----------------------------------------------------------------------------
 // Purpose: This data structure is filled in by the engine when the client .dll requests information about
@@ -514,6 +515,9 @@ public:
 
 	// Called once when the client DLL is being unloaded
 	virtual void			Shutdown( void ) = 0;
+
+	virtual void			ReplayInit( CreateInterfaceFn unkFactory ) = 0;
+	virtual void			ReplayPostInit() = 0;
 	
 	// Called at the start of each level change
 	virtual void			LevelInitPreEntity( char const* pMapName ) = 0;
@@ -549,6 +553,7 @@ public:
 	virtual void			IN_ClearStates (void) = 0;
 	// If key is found by name, returns whether it's being held down in isdown, otherwise function returns false
 	virtual bool			IN_IsKeyDown( const char *name, bool& isdown ) = 0;
+	virtual void			IN_OnMouseWheeled( int unk ) = 0;
 	// Raw keyboard signal, if the client .dll returns 1, the engine processes the key as usual, otherwise,
 	//  if the client .dll returns 0, the key is swallowed.
 	virtual int				IN_KeyEvent( int eventcode, ButtonCode_t keynum, const char *pszCurrentBinding ) = 0;
@@ -636,6 +641,16 @@ public:
 	// an error message of up to length bytes should be returned in errorMsg.
 	virtual bool			CanRecordDemo( char *errorMsg, int length ) const = 0;
 
+	virtual void			OnDemoRecordStart( const char *unk ) = 0;
+	virtual void			OnDemoRecordStop() = 0;
+	virtual void			OnDemoPlaybackStart( const char *unk ) = 0;
+	virtual void			OnDemoPlaybackStop() = 0;
+
+	virtual bool			ShouldDrawDropdownConsole() = 0;
+
+	virtual int				GetScreenWidth() = 0;
+	virtual int				GetScreenHeight() = 0;
+
 	// Added interface
 
 	// save game screenshot writing
@@ -649,17 +664,40 @@ public:
 	virtual uint			GetPresenceID( const char *pIDName ) = 0;
 	virtual const char		*GetPropertyIdString( const uint id ) = 0;
 	virtual void			GetPropertyDisplayString( uint id, uint value, char *pOutput, int nBytes ) = 0;
-#ifdef _WIN32
-	virtual void			StartStatsReporting( HANDLE handle, bool bArbitrated ) = 0;
-#endif
 
 	virtual void			InvalidateMdlCache() = 0;
 
 	virtual void			IN_SetSampleTime( float frametime ) = 0;
 
+	virtual void			ReloadFilesInList( IFileList *pList ) = 0;
+
+#ifdef _WIN32
+	virtual void			StartStatsReporting( HANDLE handle, bool bArbitrated ) = 0;
+#elif (defined _LINUX || defined __APPLE__)
+	virtual void			StartStatsReporting( void *handle, bool bArbitrated ) = 0;
+#endif
+
+	virtual void			HandleUiToggle() = 0;
+
+	virtual bool			ShouldAllowConsole() = 0;
+
+	// unknown return pointer type
+	virtual void			*GetRenamedRecvTableInfos() = 0;
+
+	// unknown return pointer type
+	virtual void			*GetClientUIMouthInfo() = 0;
+	
+	virtual void			FileReceived( const char *unk, unsigned int unk2 ) = 0;
+
+	virtual void			TranslateEffectForVisionFilter( const char *unk, const char *unk2 ) = 0;
+
+	virtual void			ClientAdjustStartSoundParams( StartSoundParams_t &params ) = 0;
+
+	virtual void			DisconnectAttempt() = 0;
+
 };
 
-#define CLIENT_DLL_INTERFACE_VERSION		"VClient015"
+#define CLIENT_DLL_INTERFACE_VERSION		"VClient017"
 
 //-----------------------------------------------------------------------------
 // Purpose: Interface exposed from the client .dll back to the engine for specifying shared .dll IAppSystems (e.g., ISoundEmitterSystem)
