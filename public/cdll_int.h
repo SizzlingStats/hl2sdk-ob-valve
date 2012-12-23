@@ -54,6 +54,7 @@ struct client_textmessage_t;
 class IAchievementMgr;
 class CGamestatsData;
 class StartSoundParams_t;
+struct vmode_s;
 
 //-----------------------------------------------------------------------------
 // Purpose: This data structure is filled in by the engine when the client .dll requests information about
@@ -168,7 +169,7 @@ struct OcclusionParams_t
 #define VENGINE_CLIENT_RANDOM_INTERFACE_VERSION	"VEngineRandom001"
 
 // change this when the new version is incompatable with the old
-#define VENGINE_CLIENT_INTERFACE_VERSION		"VEngineClient013"
+#define VENGINE_CLIENT_INTERFACE_VERSION		"VEngineClient014"
 
 //-----------------------------------------------------------------------------
 // Purpose: Interface exposed from the engine to the client .dll
@@ -197,7 +198,7 @@ public:
 	// Given an input text buffer data pointer, parses a single token into the variable token and returns the new
 	//  reading position
 	virtual const char			*ParseFile( const char *data, char *token, int maxlen ) = 0;
-	virtual bool				CopyFile( const char *source, const char *destination ) = 0;
+	virtual bool				CopyLocalFile( const char *source, const char *destination ) = 0;
 
 	// Gets the dimensions of the game window
 	virtual void				GetScreenSize( int& width, int& height ) = 0;
@@ -334,8 +335,9 @@ public:
 	virtual void		Mat_Stub( IMaterialSystem *pMatSys ) = 0;
 
 	// Get the name of the current map
-	virtual void GetChapterName( char *pchBuff, int iMaxLength ) = 0;
+	virtual void		GetChapterName( char *pchBuff, int iMaxLength ) = 0;
 	virtual char const	*GetLevelName( void ) = 0;
+	virtual int			GetLevelVersion( void ) = 0;
 #if !defined( NO_VOICE )
 	// Obtain access to the voice tweaking API
 	virtual struct IVoiceTweak_s *GetVoiceTweakAPI( void ) = 0;
@@ -395,6 +397,11 @@ public:
 	virtual bool		IsPlayingDemo( void ) = 0;
 	virtual bool		IsRecordingDemo( void ) = 0;
 	virtual bool		IsPlayingTimeDemo( void ) = 0;
+	virtual int			GetDemoRecordingTick( void ) = 0;
+	virtual int			GetDemoPlaybackTick( void ) = 0;
+	virtual int			GetDemoPlaybackStartTick( void ) = 0;
+	virtual float		GetDemoPlaybackTimeScale( void ) = 0;
+	virtual int			GetDemoPlaybackTotalTicks( void ) = 0;
 	// Is the game paused?
 	virtual bool		IsPaused( void ) = 0;
 	// Is the game currently taking a screenshot?
@@ -405,6 +412,8 @@ public:
 	virtual bool		IsLevelMainMenuBackground( void ) = 0;
 	// returns the name of the background level
 	virtual void		GetMainMenuBackgroundName( char *dest, int destlen ) = 0;
+
+	virtual void		GetVideoModes( int &, vmode_s *& ) = 0;
 
 	// Occlusion system control
 	virtual void		SetOcclusionParameters( const OcclusionParams_t &params ) = 0;
@@ -497,6 +506,19 @@ public:
 	// Methods to set/get a gamestats data container so client & server running in same process can send combined data
 	virtual void SetGamestatsData( CGamestatsData *pGamestatsData ) = 0;
 	virtual CGamestatsData *GetGamestatsData() = 0;
+
+	virtual void			ServerCmdKeyValues( KeyValues * ) = 0;
+	virtual bool			IsSkippingPlayback( void ) = 0;
+	virtual bool			IsLoadingDemo( void ) = 0;
+	virtual bool			IsPlayingDemoALocallyRecordedDemo( void ) = 0;
+	virtual void			Key_LookupBindingExact( char const * ) = 0;
+	virtual int				GetProtocolVersion( void ) = 0;
+	virtual bool			IsWindowedMode( void ) = 0;
+	virtual void			FlashWindow( void ) = 0;
+	virtual int				GetClientVersion( void ) const = 0;
+	virtual bool			IsActiveApp( void ) = 0;
+	virtual void			DisconnectInternal( void ) = 0;
+	virtual bool			IsInCommentaryMode( void ) = 0;
 };
 
 
