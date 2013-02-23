@@ -711,10 +711,9 @@ private:
 #pragma warning(disable:4018)
 #pragma warning(disable:4701)
 
-#if !defined(__clang__) && ( !defined( GNUC ) || ( defined( GNUC ) && __GNUC_MINOR__ < 3 ) )
 #define DEFINE_NON_MEMBER_ITER_RANGE_PARALLEL(N) \
 	template <typename FUNCTION_CLASS, typename FUNCTION_RETTYPE FUNC_TEMPLATE_FUNC_PARAMS_##N FUNC_TEMPLATE_ARG_PARAMS_##N, typename ITERTYPE1, typename ITERTYPE2> \
-	void IterRangeParallel(FUNCTION_RETTYPE ( FUNCTION_CLASS::*pfnProxied )( ITERTYPE1, ITERTYPE2 FUNC_BASE_TEMPLATE_FUNC_PARAMS_##N ), ITERTYPE1 from, ITERTYPE2 to FUNC_ARG_FORMAL_PARAMS_##N ) \
+	void IterRangeParallel(FUNCTION_RETTYPE ( FUNCTION_CLASS::*pfnProxied )( ITERTYPE1, ITERTYPE2 FUNC_BASE_TEMPLATE_FUNC_PARAMS_COMMA_##N FUNC_BASE_TEMPLATE_FUNC_PARAMS_##N ), ITERTYPE1 from, ITERTYPE2 to FUNC_ARG_FORMAL_PARAMS_##N ) \
 	{ \
 		const int MAX_THREADS = 16; \
 		int nIdle = g_pThreadPool->NumIdleThreads(); \
@@ -749,7 +748,7 @@ FUNC_GENERATE_ALL( DEFINE_NON_MEMBER_ITER_RANGE_PARALLEL );
 
 #define DEFINE_MEMBER_ITER_RANGE_PARALLEL(N) \
 	template <typename OBJECT_TYPE, typename FUNCTION_CLASS, typename FUNCTION_RETTYPE FUNC_TEMPLATE_FUNC_PARAMS_##N FUNC_TEMPLATE_ARG_PARAMS_##N, typename ITERTYPE1, typename ITERTYPE2> \
-	void IterRangeParallel(OBJECT_TYPE *pObject, FUNCTION_RETTYPE ( FUNCTION_CLASS::*pfnProxied )( ITERTYPE1, ITERTYPE2 FUNC_BASE_TEMPLATE_FUNC_PARAMS_##N ), ITERTYPE1 from, ITERTYPE2 to FUNC_ARG_FORMAL_PARAMS_##N ) \
+	void IterRangeParallel(OBJECT_TYPE *pObject, FUNCTION_RETTYPE ( FUNCTION_CLASS::*pfnProxied )( ITERTYPE1, ITERTYPE2 FUNC_BASE_TEMPLATE_FUNC_PARAMS_COMMA_##N FUNC_BASE_TEMPLATE_FUNC_PARAMS_##N ), ITERTYPE1 from, ITERTYPE2 to FUNC_ARG_FORMAL_PARAMS_##N ) \
 	{ \
 		const int MAX_THREADS = 16; \
 		int nIdle = g_pThreadPool->NumIdleThreads(); \
@@ -781,7 +780,6 @@ FUNC_GENERATE_ALL( DEFINE_NON_MEMBER_ITER_RANGE_PARALLEL );
 	}
 
 FUNC_GENERATE_ALL( DEFINE_MEMBER_ITER_RANGE_PARALLEL );
-#endif // GCC 
 
 //-----------------------------------------------------------------------------
 // Work splitting: competitive, best when cost per item varies a lot
