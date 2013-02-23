@@ -32,6 +32,7 @@
 
 #include <stddef.h>
 #include "tier0/mem.h"
+#include "mathlib\mathlib.h"
 
 struct _CrtMemState;
 
