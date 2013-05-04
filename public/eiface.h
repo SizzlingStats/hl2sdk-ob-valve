@@ -57,7 +57,6 @@ class CStandardSendProxies;
 class IAchievementMgr;
 class CGamestatsData;
 class CSteamID;
-class CTFGCServerSystem;
 
 typedef struct player_info_s player_info_t;
 
@@ -402,8 +401,7 @@ public:
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_4	"ServerGameDLL004"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_5	"ServerGameDLL005"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_6	"ServerGameDLL006"
-#define INTERFACEVERSION_SERVERGAMEDLL_VERSION_8	"ServerGameDLL008"
-#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL009"
+#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL007"
 
 //-----------------------------------------------------------------------------
 // Purpose: These are the interfaces that the game .dll exposes to the engine
@@ -514,12 +512,6 @@ public:
 	virtual void			GameServerSteamAPIActivated( void ) = 0;
 	
 	virtual void			GameServerSteamAPIShutdown( void ) = 0;
-
-	virtual void			SetServerHibernation( bool bHibernation ) = 0;
-	virtual CTFGCServerSystem	*GetServerGCLobby( void ) = 0;
-
-	virtual const char		*GetServerBrowserMapOverride( void ) = 0;
-	virtual const char		*GetServerBrowserGameData( void ) = 0;
 };
 
 //-----------------------------------------------------------------------------
