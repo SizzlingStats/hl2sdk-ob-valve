@@ -1120,7 +1120,11 @@ protected:
 	virtual void OnExit();
 
 	// Allow for custom start waiting
+#ifdef _WIN32
+	virtual bool WaitForCreateComplete( CThreadEvent *pEvent );
+#else
 	bool WaitForCreateComplete( CThreadEvent *pEvent );
+#endif
 
 	// "Virtual static" facility
 	typedef unsigned (__stdcall *ThreadProc_t)( void * );
