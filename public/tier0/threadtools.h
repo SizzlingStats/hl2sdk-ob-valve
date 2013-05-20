@@ -1046,11 +1046,18 @@ public:
 
 	// This method causes the current thread to wait until this thread
 	// is no longer alive.
+#ifdef _WIN32
 	bool Join( unsigned timeout = TT_INFINITE );
+#else
+	bool Join();
+#endif
 
 #ifdef _WIN32
 	// Access the thread handle directly
 	HANDLE GetThreadHandle();
+#endif
+
+#ifndef __APPLE__
 	uint GetThreadId();
 #endif
 
@@ -1061,9 +1068,6 @@ public:
 	//-----------------------------------------------------
 	// Functions for both this, and maybe, and other threads
 	//-----------------------------------------------------
-
-	// Forcibly, abnormally, but relatively cleanly stop the thread
-	void Stop( int exitCode = 0 );
 
 	// Get the priority
 	int GetPriority() const;
@@ -1089,6 +1093,10 @@ public:
 	// CThread
 	static CThread *GetCurrentCThread();
 
+	// Forcibly, abnormally, but relatively cleanly stop the thread
+	void Stop( int exitCode = 0 );
+
+
 	// Offer a context switch. Under Win32, equivalent to Sleep(0)
 #ifdef Yield
 #undef Yield
@@ -1099,6 +1107,8 @@ public:
 	// scheduled for further execution until a certain amount of real
 	// time has elapsed, more or less.
 	static void Sleep( unsigned duration );
+
+	CThread *Cleanup();
 
 protected:
 
@@ -1113,10 +1123,8 @@ protected:
 	// Called when the thread exits
 	virtual void OnExit();
 
-#ifdef _WIN32
 	// Allow for custom start waiting
 	virtual bool WaitForCreateComplete( CThreadEvent *pEvent );
-#endif
 
 	// "Virtual static" facility
 	typedef unsigned (__stdcall *ThreadProc_t)( void * );
@@ -1135,9 +1143,7 @@ private:
 	struct ThreadInit_t
 	{
 		CThread *     pThread;
-#ifdef _WIN32
 		CThreadEvent *pInitCompleteEvent;
-#endif
 		bool *        pfInitSuccess;
 	};
 
@@ -1152,6 +1158,7 @@ private:
 	ThreadId_t m_threadId;
 #elif defined _LINUX || defined __APPLE__
 	pthread_t m_threadId;
+	int		m_suspend;
 #endif
 	int		m_result;
 	char	m_szName[32];
