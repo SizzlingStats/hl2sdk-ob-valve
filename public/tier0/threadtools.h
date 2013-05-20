@@ -1046,11 +1046,7 @@ public:
 
 	// This method causes the current thread to wait until this thread
 	// is no longer alive.
-#ifdef _WIN32
 	bool Join( unsigned timeout = TT_INFINITE );
-#else
-	bool Join();
-#endif
 
 #ifdef _WIN32
 	// Access the thread handle directly
@@ -1124,7 +1120,7 @@ protected:
 	virtual void OnExit();
 
 	// Allow for custom start waiting
-	virtual bool WaitForCreateComplete( CThreadEvent *pEvent );
+	bool WaitForCreateComplete( CThreadEvent *pEvent );
 
 	// "Virtual static" facility
 	typedef unsigned (__stdcall *ThreadProc_t)( void * );
