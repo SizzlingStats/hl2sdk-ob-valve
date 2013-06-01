@@ -816,8 +816,10 @@ protected:
 	pthread_mutex_t	m_Mutex;
 	pthread_cond_t	m_Condition;
 	bool m_bInitalized;
+	char m_unk[3];
 	int m_cSet;
 	bool m_bManualReset;
+	bool m_unk2;
 #else
 #error "Implement me"
 #endif
@@ -914,9 +916,6 @@ public:
 private:
 	CThreadEvent( const CThreadEvent & );
 	CThreadEvent &operator=( const CThreadEvent & );
-#if defined _LINUX || defined __APPLE__
-	CInterlockedInt m_cSet;
-#endif
 };
 
 // Hard-wired manual event for use in array declarations
