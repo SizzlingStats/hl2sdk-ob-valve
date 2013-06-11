@@ -1129,6 +1129,10 @@ protected:
 	typedef unsigned (__stdcall *ThreadProc_t)( void * );
 	virtual ThreadProc_t GetThreadProc();
 
+#ifndef _WIN32
+	virtual bool IsThreadRunning();
+#endif
+
 	CThreadMutex m_Lock;
 
 private:
