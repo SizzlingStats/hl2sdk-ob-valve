@@ -11,6 +11,9 @@
 
 #include "mathlib/vector.h"
 
+struct edict_t;
+class CGlobalVars;
+
 // helper class for user commands
 class CBotCmd
 {
