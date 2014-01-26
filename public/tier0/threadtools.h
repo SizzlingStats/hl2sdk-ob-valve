@@ -308,13 +308,13 @@ class CThreadLocalInt : public CThreadLocal<T>
 {
 public:
 	operator const T() const { return CThreadLocal<T>::Get(); }
-	int	operator=( T i ) { Set( i ); return i; }
+	int	operator=( T i ) { this->Set( i ); return i; }
 
-	T operator++()					{ T i = CThreadLocal<T>::Get(); Set( ++i ); return i; }
-	T operator++(int)				{ T i = CThreadLocal<T>::Get(); Set( i + 1 ); return i; }
+	T operator++()					{ T i = this->Get(); this->Set( ++i ); return i; }
+	T operator++(int)				{ T i = this->Get(); this->Set( i + 1 ); return i; }
 
-	T operator--()					{ T i = CThreadLocal<T>::Get(); Set( --i ); return i; }
-	T operator--(int)				{ T i = CThreadLocal<T>::Get(); Set( i - 1 ); return i; }
+	T operator--()					{ T i = this->Get(); this->Set( --i ); return i; }
+	T operator--(int)				{ T i = this->Get(); this->Set( i - 1 ); return i; }
 };
 
 //---------------------------------------------------------
