@@ -57,6 +57,9 @@ class CStandardSendProxies;
 class IAchievementMgr;
 class CGamestatsData;
 class CSteamID;
+class IReplayFactory;
+class IReplaySystem;
+class IServer;
 
 typedef struct player_info_s player_info_t;
 
@@ -395,7 +398,37 @@ public:
 	virtual int GetAllClusterBounds( bbox_t *pBoxes, int maxboxes ) = 0;
 	virtual edict_t *CreateFakeClientEx( const char *netname, bool bUnknown ) = 0;
 	virtual int GetServerVersion() const = 0;
-	virtual void *GetReplay() = 0;
+	// Get sv.GetTime()
+	virtual float GetServerTime() const = 0;
+
+	// Exposed for server plugin authors
+	virtual IServer *GetIServer() = 0;
+
+	virtual bool IsPlayerNameLocked( const edict_t *pEdict ) = 0;
+	virtual bool CanPlayerChangeName( const edict_t *pEdict ) = 0;
+
+	// Find the canonical name of a map, given a partial or non-canonical map name.
+	// Except in the case of an exact match, pMapName is updated to the canonical name of the match.
+	// NOTE That this is subject to the same limitation as ServerGameDLL::CanProvideLevel -- This is non-blocking, so it
+	//      is possible that blocking ServerGameDLL::PrepareLevelResources call may be able to pull a better match than
+	//      is immediately available to this call (e.g. blocking lookups of cloud maps)
+	enum eFindMapResult {
+		// A direct match for this name was found
+		eFindMap_Found,
+		// No match for this map name could be found.
+		eFindMap_NotFound,
+		// A fuzzy match for this mapname was found and pMapName was updated to the full name.
+		// Ex: cp_dust -> cp_dustbowl
+		eFindMap_FuzzyMatch,
+		// A match for this map name was found, and the map name was updated to the canonical version of the
+		// name.
+		// Ex: workshop/1234 -> workshop/cp_qualified_name.ugc1234
+		eFindMap_NonCanonical,
+		// No currently available match for this map name could be found, but it may be possible to load ( see caveat
+		// about PrepareLevelResources above )
+		eFindMap_PossiblyAvailable
+	};
+	virtual eFindMapResult FindMap( /* in/out */ char *pMapName, int nMapNameMax ) = 0;
 };
 
 abstract_class IServerGCLobby
@@ -412,7 +445,8 @@ public:
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_6	"ServerGameDLL006"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_7	"ServerGameDLL007"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_8	"ServerGameDLL008"
-#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL009"
+#define INTERFACEVERSION_SERVERGAMEDLL_VERSION_9	"ServerGameDLL009"
+#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL010"
 
 //-----------------------------------------------------------------------------
 // Purpose: These are the interfaces that the game .dll exposes to the engine
