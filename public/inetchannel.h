@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Â© 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -28,8 +28,6 @@ public:
 
 	virtual void	SetDataRate(float rate) = 0;
 	virtual bool	RegisterMessage(INetMessage *msg) = 0;
-	virtual bool	StartStreaming( unsigned int challengeNr ) = 0;
-	virtual void	ResetStreaming( void ) = 0;
 	virtual void	SetTimeout(float seconds) = 0;
 	virtual void	SetDemoRecorder(IDemoRecorder *recorder) = 0;
 	virtual void	SetChallengeNr(unsigned int chnr) = 0;
@@ -39,7 +37,6 @@ public:
 	virtual void	Shutdown(const char *reason) = 0;
 	
 	virtual void	ProcessPlayback( void ) = 0;
-	virtual bool	ProcessStream( void ) = 0;
 	virtual void	ProcessPacket( struct netpacket_s* packet, bool bHasHeader ) = 0;
 			
 	virtual bool	SendNetMsg(INetMessage &msg, bool bForceReliable = false, bool bVoice = false ) = 0;
@@ -71,8 +68,6 @@ public:
 	virtual void	SetFileTransmissionMode(bool bBackgroundMode) = 0;
 	virtual void	SetCompressionMode( bool bUseCompression ) = 0;
 	virtual unsigned int RequestFile(const char *filename) = 0;
-	
-	virtual float	GetTimeSinceLastReceived( void ) const = 0;
 
 	virtual void	SetMaxBufferSize(bool bReliable, int nBytes, bool bVoice = false ) = 0;
 
